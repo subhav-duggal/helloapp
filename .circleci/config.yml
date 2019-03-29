@@ -2,10 +2,10 @@ version: 2
 
 jobs:
   build&pushImage:
+    working_directory: /go/src/hello-app
     docker:
       - image: circleci/golang:1.10
     steps:
-      working_directory: /go/src/hello-app
       - checkout
       - run:
           name: build the binary
