@@ -1,0 +1,65 @@
+version: 2
+
+jobs:
+  build&pushImage:
+    docker:
+      - image: circleci/golang:1.10
+    steps:
+      working_directory: /go/src/hello-app
+      - checkout
+      - run:
+          name: build the binary
+          command: go build -o hello-app
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Build the docker image
+          command: docker build . -t ${CIRCLE_PROJECT_REPONAME}:dev
+      - run:
+          name: Login to ECR
+          command: $(aws ecr get-login --region $AWS_REGION)
+      - run: 
+          name: Tag the image with ECR repo name 
+          command: docker tag ${CIRCLE_PROJECT_REPONAME}:dev ${HELLOWAPP_ECR_REPO}:dev    
+      - run: 
+          name: Push the image the ECR repo
+          command: docker push ${HELLOAPP_ECR_REPO}:dev
+  deploy:
+    docker:
+        - image: circleci/golang:1.10
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - checkout
+      - run:
+          name: Install and confgure kubectl
+          command: sudo curl -L https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl && sudo chmod +x /usr/local/bin/kubectl
+      - run:
+          name: Pull the kubeconfig file from s3
+          command: aws s3 cp s3://$KUBECONFIG_FILE_S3BUCKET/kubeconfig kubeconfig
+      - run:
+          name: Move kubeconfig file to $HOME/.kube/ location
+          command: mkdir $HOME/.kube && mv kubeconfig $HOME/.kube/kubeconfig     
+      - run:
+          name: Install and confgure kubectl aws-iam-authenticator
+          command: curl -o aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/aws-iam-authenticator && sudo chmod +x ./aws-iam-authenticator && sudo cp ./aws-iam-authenticator /bin/aws-iam-authenticator
+      - run:
+          name: Install and configuire helm
+          command: sudo curl -L https://storage.googleapis.com/kubernetes-helm/helm-v2.11.0-linux-amd64.tar.gz | tar xz && sudo mv linux-amd64/helm /bin/helm && sudo rm -rf linux-amd64
+      - run: 
+          name: Initialize helm
+          command:  helm init --client-only --kubeconfig=$HOME/.kube/kubeconfig
+      - run:
+          name: Install tiller plugin
+          command: helm plugin install https://github.com/rimusz/helm-tiller --kubeconfig=$HOME/.kube/kubeconfig        
+      - run:
+          name: Deploy skype bot release using helm chart 
+          command: bash scripts/release-helloapp.sh
+workflows:
+  version: 2
+  primary:
+    jobs:
+      - build&pushImage
+      - deploy:
+          requires:
+            - build&pushImage

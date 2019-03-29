@@ -1,0 +1,29 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: helloapp
+spec:
+  replicas: 1
+  strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: helloapp
+        env: {{ .Values.labels.env }}
+        cluster: {{ .Values.labels.cluster }}
+    spec:
+      containers:
+      - name: helloapp
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.imagePullPolicy }}
+        readinessProbe:
+          httpGet:
+            path: /hello
+            ort: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            successThreshold: 1

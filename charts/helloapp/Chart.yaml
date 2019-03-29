@@ -1,0 +1,6 @@
+version: 1.0.0
+appVersion: 0.0.1
+name: helloapp
+description: Helm chart for helloapp
+source:
+  - hhttps://github.com/velotio-tech/hello-app
