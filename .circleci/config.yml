@@ -14,7 +14,7 @@ jobs:
           docker_layer_caching: true
       - run:
           name: Set the tag for the image, we will concatenate the app verson and circle build number with a `-` char in between
-          command:  echo 'export TAG=`cat VERSION-$CIRCLE_BUILD_NUM`' >> $BASH_ENV
+          command:  echo 'export TAG=$(cat VERSION)-$CIRCLE_BUILD_NUM' >> $BASH_ENV
       - run:
           name: Build the docker image
           command: docker build . -t ${CIRCLE_PROJECT_REPONAME}:$TAG
