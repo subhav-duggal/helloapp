@@ -1,4 +1,6 @@
 #!/bin/bash
+TAG=$1
+sed -i "s/tag:.*/tag: $TAG/" charts/helloapp/values.yaml
 echo "start tiller"
 export KUBECONFIG=$HOME/.kube/kubeconfig
 helm tiller start-ci
