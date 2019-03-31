@@ -1,6 +1,6 @@
 image:
-  tag: 0.0.1
-  repository: akash125/hellowapp
+  tag: dev
+  repository: 275829625285.dkr.ecr.us-west-2.amazonaws.com/helloapp
   imagePullPolicy: Always
 
 labels:
