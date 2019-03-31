@@ -59,7 +59,7 @@ jobs:
           name: Install tiller plugin
           command: helm plugin install https://github.com/rimusz/helm-tiller --kubeconfig=$HOME/.kube/kubeconfig        
       - run:
-          name: Deploy skype bot release using helm chart 
+          name: Release helloapp using helm chart 
           command: bash scripts/release-helloapp.sh
 workflows:
   version: 2
