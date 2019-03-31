@@ -42,7 +42,7 @@ jobs:
           command: export TZ=Europe/Minsk && sudo ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > sudo  /etc/timezone && sudo apt-get update && sudo apt-get install -y awscli
       - run:
           name: Set the tag for the image, we will concatenate the app verson and circle build number with a `-` char in between
-          command:  echo 'export TAG=$(cat VERSION)-$CIRCLE_BUILD_NUM' >> $BASH_ENV
+          command:  echo 'export TAG=$(cat VERSION)-$CIRCLE_PREVIOUS_BUILD_NUM' >> $BASH_ENV
       - run:
           name: Install and confgure kubectl
           command: sudo curl -L https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl && sudo chmod +x /usr/local/bin/kubectl
