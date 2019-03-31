@@ -34,7 +34,7 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       - checkout
-       - run:
+      - run:
           name: Install AWS cli
           command: export TZ=Europe/Minsk && sudo ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > sudo  /etc/timezone && sudo apt-get update && sudo apt-get install -y awscli
       - run:
