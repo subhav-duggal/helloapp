@@ -13,8 +13,11 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
+          name: Set the tag for the image, we will concatenate the app verson and circle build number with a `-` char in between
+          command:  echo 'export TAG=`cat VERSION-$CIRCLE_BUILD_NUM`' >> $BASH_ENV
+      - run:
           name: Build the docker image
-          command: docker build . -t ${CIRCLE_PROJECT_REPONAME}:dev
+          command: docker build . -t ${CIRCLE_PROJECT_REPONAME}:$TAG
       - run:
           name: Install AWS cli
           command: export TZ=Europe/Minsk && sudo ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > sudo  /etc/timezone && sudo apt-get update && sudo apt-get install -y awscli
@@ -23,10 +26,10 @@ jobs:
           command: $(aws ecr get-login --region $AWS_REGION | sed -e 's/-e none//g')
       - run: 
           name: Tag the image with ECR repo name 
-          command: docker tag ${CIRCLE_PROJECT_REPONAME}:dev ${HELLOAPP_ECR_REPO}:dev    
+          command: docker tag ${CIRCLE_PROJECT_REPONAME}:$TAG ${HELLOAPP_ECR_REPO}:$TAG    
       - run: 
           name: Push the image the ECR repo
-          command: docker push ${HELLOAPP_ECR_REPO}:dev
+          command: docker push ${HELLOAPP_ECR_REPO}:$TAG
   deploy:
     docker:
         - image: circleci/golang:1.10
