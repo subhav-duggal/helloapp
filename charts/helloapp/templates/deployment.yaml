@@ -23,7 +23,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /hello
-            ort: 8080
+            port: 8080
             initialDelaySeconds: 5
             periodSeconds: 5
             successThreshold: 1
