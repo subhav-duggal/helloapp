@@ -23,7 +23,7 @@ jobs:
           command: $(aws ecr get-login --region $AWS_REGION | sed -e 's/-e none//g')
       - run: 
           name: Tag the image with ECR repo name 
-          command: docker tag ${CIRCLE_PROJECT_REPONAME}:dev ${HELLOWAPP_ECR_REPO}:dev    
+          command: docker tag ${CIRCLE_PROJECT_REPONAME}:dev ${HELLOAPP_ECR_REPO}:dev    
       - run: 
           name: Push the image the ECR repo
           command: docker push ${HELLOAPP_ECR_REPO}:dev
@@ -34,6 +34,9 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       - checkout
+       - run:
+          name: Install AWS cli
+          command: export TZ=Europe/Minsk && sudo ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > sudo  /etc/timezone && sudo apt-get update && sudo apt-get install -y awscli
       - run:
           name: Install and confgure kubectl
           command: sudo curl -L https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl && sudo chmod +x /usr/local/bin/kubectl
