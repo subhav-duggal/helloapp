@@ -20,7 +20,7 @@ jobs:
           command: export TZ=Europe/Minsk && sudo ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > sudo  /etc/timezone && sudo apt-get update && sudo apt-get install -y awscli
       - run:
           name: Login to ECR
-          command: $(aws ecr get-login --region $AWS_REGION)
+          command: $(aws ecr get-login --region $AWS_REGION | sed -e 's/-e none//g')
       - run: 
           name: Tag the image with ECR repo name 
           command: docker tag ${CIRCLE_PROJECT_REPONAME}:dev ${HELLOWAPP_ECR_REPO}:dev    
