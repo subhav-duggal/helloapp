@@ -1,11 +1,11 @@
 image:
   tag: dev
-  repository: 275829625285.dkr.ecr.us-west-2.amazonaws.com/helloapp
+  repository: 932258881501.dkr.ecr.us-east-2.amazonaws.com/helloapp
   imagePullPolicy: Always
 
 labels:
   env: "staging"
-  cluster: "eks-cluster-blog"
+  cluster: "demo-cluster"
 
 service:
   port: 80
