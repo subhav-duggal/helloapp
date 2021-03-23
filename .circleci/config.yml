@@ -46,12 +46,12 @@ jobs:
       - run:
           name: Install and confgure kubectl
           command: sudo curl -L https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl && sudo chmod +x /usr/local/bin/kubectl
-      - run:
-          name: Pull the kubeconfig file from s3
-          command: aws s3 cp s3://$KUBECONFIG_FILE_S3BUCKET/kubeconfig kubeconfig
-      - run:
-          name: Move kubeconfig file to $HOME/.kube/ location
-          command: mkdir $HOME/.kube && mv kubeconfig $HOME/.kube/kubeconfig     
+      #- run:
+         # name: Pull the kubeconfig file from s3
+          #command: aws s3 cp s3://$KUBECONFIG_FILE_S3BUCKET/kubeconfig kubeconfig
+      #- run:
+       #   name: Move kubeconfig file to $HOME/.kube/ location
+        #  command: mkdir $HOME/.kube && mv kubeconfig $HOME/.kube/kubeconfig     
       - run:
           name: Install and confgure kubectl aws-iam-authenticator
           command: curl -o aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/aws-iam-authenticator && sudo chmod +x ./aws-iam-authenticator && sudo cp ./aws-iam-authenticator /bin/aws-iam-authenticator
